@@ -46,6 +46,8 @@ class RegisteredUserController extends Controller
             'terms_accepted' => $request->terms ? 1 : 0,
         ]);
 
+        $user->addRole('user');
+
         event(new Registered($user));
 
         Auth::login($user);

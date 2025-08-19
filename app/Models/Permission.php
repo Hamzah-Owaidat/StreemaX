@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Laratrust\Models\LaratrustPermission;
+use Laratrust\Models\Permission as PermissionModel;
 
-class Permission extends LaratrustPermission
+class Permission extends PermissionModel
 {
-    // Optional: add custom logic here
+    protected $fillable = ['name', 'display_name', 'description'];
 }

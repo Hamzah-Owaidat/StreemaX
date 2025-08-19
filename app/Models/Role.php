@@ -1,10 +1,9 @@
 <?php
-
 namespace App\Models;
 
-use Laratrust\Models\LaratrustRole;
+use Laratrust\Models\Role as RoleModel;
 
-class Role extends LaratrustRole
+class Role extends RoleModel
 {
-    // Optional: add custom logic here
+    protected $fillable = ['name', 'display_name', 'description'];
 }
