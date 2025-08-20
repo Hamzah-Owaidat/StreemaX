@@ -4,9 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
 import AuthLayout from '@/layouts/auth-layout';
-import { Form, Head } from '@inertiajs/react';
+import { Form, Head, usePage } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
+import { useEffect } from 'react';
 
 interface LoginProps {
     status?: string;
@@ -14,11 +16,30 @@ interface LoginProps {
 }
 
 export default function Login({ status, canResetPassword }: LoginProps) {
+
+    const toast = useToast();
+
     return (
         <AuthLayout title="Log in to your account" description="Enter your email and password below to log in">
             <Head title="Log in" />
 
-            <Form method="post" action={route('login')} resetOnSuccess={['password']} className="flex flex-col gap-6">
+            <Form
+                method="post"
+                action={route('login')}
+                resetOnSuccess={['password']}
+                className="flex flex-col gap-6"
+                onSuccess={(page) => {
+                    // If login was successful, you can show a success toast
+                    toast.success('Logged in successfully!');
+                }}
+                onError={(errors) => {
+                    // errors contains validation errors or flash messages from backend
+                    if (errors.error) {
+                        toast.error(errors.error); // Show the backend flash error (like deactivated account)
+                    }
+                }}
+            >
+
                 {({ processing, errors }) => (
                     <>
                         <div className="grid gap-6">

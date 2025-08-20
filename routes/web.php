@@ -13,10 +13,14 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('dashboard.')
     // Dashboard home
     Route::get('/', function () {
         return Inertia::render('dashboard/dashboard');
-    })->name('home');
+    })->name('dashboard');
 
     // Example: Users management page
     Route::get('/users', [UsersController::class, 'index'])->name('users');
+    Route::patch('/users/{user}/toggle', [UsersController::class, 'toggleActive'])->name('users.toggle');
+    Route::patch('/users/{user}', [UsersController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [UsersController::class, 'destroy'])->name('users.destroy');
+
 
 });
 
