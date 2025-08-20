@@ -1,16 +1,13 @@
 import '../css/app.css';
-import { createInertiaApp, router } from '@inertiajs/react';
+import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
-import { initializeTheme } from './hooks/use-appearance';
 import { Toaster } from 'react-hot-toast';
 import { configureEcho } from '@laravel/echo-react';
-import echo from '@/lib/echo';
-import { useEffect } from 'react';
-import toast from 'react-hot-toast';
+import { initializeTheme } from './hooks/use-appearance';
+import EchoListener from './listeners/EchoListeners';
 
-
-// Configure Echo
+// Configure Echo globally
 configureEcho({
     broadcaster: 'pusher',
 });
@@ -24,33 +21,13 @@ createInertiaApp({
     setup({ el, App, props }) {
         const root = createRoot(el);
 
-        // Helper component to handle Echo events
-        function EchoListener() {
-            useEffect(() => {
-                const currentUserId = props.initialPage?.props?.auth?.user?.id;
-
-                if (!currentUserId) return;
-
-                const channel = echo.private(`user.${currentUserId}`);
-
-                channel.listen('UserDeactivated', (event: any) => {
-                    console.log('UserDeactivated event received', event);
-                    toast.error('You have been deactivated! Logging out...');
-                    router.post(route('logout'));
-                });
-
-                return () => {
-                    channel.stopListening('UserDeactivated');
-                };
-            }, [props.initialPage?.props?.auth?.user?.id]);
-
-            return null;
-        }
+        const { auth } = props.initialPage?.props ?? {};
+        const user = auth?.user;
 
         root.render(
             <>
                 <App {...props} />
-                <EchoListener />
+                <EchoListener user={user} />
                 <Toaster position="top-right" />
             </>
         );
@@ -60,5 +37,5 @@ createInertiaApp({
     },
 });
 
-// Initialize theme (light / dark)
+// Initialize theme
 initializeTheme();

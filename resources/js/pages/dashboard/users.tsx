@@ -6,8 +6,6 @@ import { User } from '@/types';
 import { Head, usePage, useForm } from '@inertiajs/react';
 import Actions from '@/components/ui/actions';
 import { useToast } from '@/hooks/use-toast';
-import { useEffect } from 'react';
-import echo from '@/lib/echo';
 
 export default function Users({ users }: { users: User[] }) {
     const { auth } = usePage().props as any; // assuming `auth.user` is available

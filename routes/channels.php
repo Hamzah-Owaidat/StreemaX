@@ -19,3 +19,5 @@ Broadcast::channel('user.{userId}', function ($user, $userId) {
     // Allow access only if the authenticated user's ID matches the userId
     return (int) $user->id === (int) $userId;
 });
+
+

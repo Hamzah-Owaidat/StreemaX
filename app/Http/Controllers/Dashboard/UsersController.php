@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Events\UserDeleted;
 
 class UsersController extends Controller
 {
@@ -48,7 +49,13 @@ class UsersController extends Controller
             return back()->with('error', 'You cannot delete yourself.');
         }
 
+        // Broadcast the user deletion event
+        broadcast(new UserDeleted($user));
+
         $user->delete();
+
+        // Optionally, you can log the deletion
+        \Log::info("User deleted: {$user->id} by Auth User: {$authUserId}");
 
         return back()->with('success', 'User deleted successfully.');
     }
