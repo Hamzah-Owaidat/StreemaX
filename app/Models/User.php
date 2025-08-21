@@ -24,7 +24,13 @@ class User extends Authenticatable implements LaratrustUser
         'email',
         'password',
         'dob',
-        'terms_accepted'
+        'terms_accepted',
+        'profile_photo',
+        'is_streamer',
+        'is_active',
+        'wallet_balance',
+        'provider',
+        'provider_id',
     ];
 
     /**

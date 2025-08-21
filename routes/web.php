@@ -8,19 +8,19 @@ Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
-Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('dashboard.')->group(function () {
+// Dashboard routes - restricted to admin users only
+Route::middleware(['auth', 'verified', 'admin'])->prefix('dashboard')->name('dashboard.')->group(function () {
 
     // Dashboard home
     Route::get('/', function () {
         return Inertia::render('dashboard/dashboard');
     })->name('dashboard');
 
-    // Example: Users management page
+    // Users management routes
     Route::get('/users', [UsersController::class, 'index'])->name('users');
     Route::patch('/users/{user}/toggle', [UsersController::class, 'toggleActive'])->name('users.toggle');
     Route::patch('/users/{user}', [UsersController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [UsersController::class, 'destroy'])->name('users.destroy');
-
 
 });
 
