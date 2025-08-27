@@ -6,6 +6,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -31,5 +33,20 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        
+        $exceptions->render(function (HttpException $ex, Request $request) {
+            $statusCode = $ex->getStatusCode();
+            // Use Inertia for React-based error pages
+            if ($statusCode === 404) {
+                return inertia('errors/Error404')->toResponse($request)->setStatusCode(404);
+            }
+            if ($statusCode === 500) {
+                return inertia('errors/Error500')->toResponse($request)->setStatusCode(500);
+            }
+        });
+
+        // Catch any other unexpected exceptions
+        $exceptions->render(function (Throwable $th, Request $request) {
+            return inertia('Error500')->toResponse($request)->setStatusCode(500);
+        });
     })->create();
